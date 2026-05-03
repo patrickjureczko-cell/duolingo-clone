@@ -35,7 +35,7 @@ services:
     environment:
       DATABASE_URL: postgres://postgres:postgres@db:5432/duolingo_clone
       REDIS_URL: redis://redis:6379/0
-      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
       DEBUG: "True"
       ALLOWED_HOSTS: localhost,127.0.0.1,backend
     depends_on:
@@ -53,7 +53,7 @@ services:
     environment:
       DATABASE_URL: postgres://postgres:postgres@db:5432/duolingo_clone
       REDIS_URL: redis://redis:6379/0
-      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
     depends_on:
       db:
         condition: service_healthy

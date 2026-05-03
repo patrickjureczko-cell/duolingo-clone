@@ -6,10 +6,10 @@ from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
-EXTRACT_TOOL = {
+EXTRACT_FUNCTION = {
     "name": "save_questions",
     "description": "Save extracted questions from the educational material.",
-    "input_schema": {
+    "parameters": {
         "type": "object",
         "properties": {
             "questions": {
@@ -67,30 +67,27 @@ def process_upload(self, upload_id: int):
     upload.save(update_fields=['status'])
 
     try:
-        import anthropic
+        from openai import OpenAI
 
         text = extract_text_from_file(upload.file.path)
         if not text.strip():
             raise ValueError('Could not extract text from the uploaded file.')
 
-        # Truncate to ~15k chars to stay within token limits
         truncated = text[:15_000]
 
-        client = anthropic.Anthropic(api_key=settings.ANTHROPIC_API_KEY)
-        response = client.messages.create(
-            model='claude-opus-4-7',
-            max_tokens=4096,
-            system=SYSTEM_PROMPT,
-            messages=[{
-                'role': 'user',
-                'content': f'Extract questions from the following educational text:\n\n{truncated}',
-            }],
-            tools=[EXTRACT_TOOL],
-            tool_choice={'type': 'tool', 'name': 'save_questions'},
+        client = OpenAI(api_key=settings.OPENAI_API_KEY)
+        response = client.chat.completions.create(
+            model='gpt-4o',
+            messages=[
+                {'role': 'system', 'content': SYSTEM_PROMPT},
+                {'role': 'user', 'content': f'Extract questions from the following educational text:\n\n{truncated}'},
+            ],
+            tools=[{'type': 'function', 'function': EXTRACT_FUNCTION}],
+            tool_choice={'type': 'function', 'function': {'name': 'save_questions'}},
         )
 
-        tool_use = next(b for b in response.content if b.type == 'tool_use')
-        questions_data = tool_use.input['questions']
+        tool_call = response.choices[0].message.tool_calls[0]
+        questions_data = json.loads(tool_call.function.arguments)['questions']
 
         course = Course.objects.create(
             topic=upload.topic,
