@@ -1,18 +1,15 @@
 <template>
   <div class="max-w-lg mx-auto px-4 py-6 pb-28 lg:pb-8">
-    <!-- Back -->
     <RouterLink to="/" class="inline-flex items-center gap-1 text-duo-gray font-bold text-sm mb-4 hover:text-duo-dark">
-      ← Back
+      ← Zurück
     </RouterLink>
 
-    <!-- Loading skeleton -->
     <div v-if="loading" class="space-y-4">
       <div class="h-24 card animate-pulse" />
       <div class="h-16 card animate-pulse" />
     </div>
 
     <template v-else>
-      <!-- Topic header -->
       <div class="card p-5 flex items-center gap-4 mb-4">
         <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-4xl"
           :style="{ background: (topic?.color ?? '#58CC02') + '22' }">
@@ -24,11 +21,10 @@
         </div>
       </div>
 
-      <!-- Stats row -->
       <div class="grid grid-cols-3 gap-3 mb-6">
         <div class="card p-3 text-center">
           <div class="text-2xl font-extrabold text-duo-orange">🔥{{ progress?.streak_days ?? 0 }}</div>
-          <div class="text-xs text-duo-gray font-bold mt-0.5">Streak</div>
+          <div class="text-xs text-duo-gray font-bold mt-0.5">Serie</div>
         </div>
         <div class="card p-3 text-center">
           <div class="text-2xl font-extrabold text-yellow-500">⭐{{ progress?.xp ?? 0 }}</div>
@@ -38,92 +34,76 @@
           <div class="text-xl font-extrabold text-duo-red leading-tight mt-0.5">
             {{ '❤️'.repeat(progress?.hearts ?? 5) }}
           </div>
-          <div class="text-xs text-duo-gray font-bold mt-0.5">Hearts</div>
+          <div class="text-xs text-duo-gray font-bold mt-0.5">Leben</div>
         </div>
       </div>
 
-      <!-- Empty state with generate -->
       <div v-if="courses.length === 0" class="card p-8 text-center">
         <div class="text-6xl mb-4">🤖</div>
-        <h2 class="font-extrabold text-xl text-duo-dark mb-1">No lessons yet</h2>
+        <h2 class="font-extrabold text-xl text-duo-dark mb-1">Noch keine Lektionen</h2>
         <p class="text-duo-gray text-sm mb-6">
-          Let AI generate a course for you, or upload your own material.
+          Lass die KI einen Kurs erstellen oder lade eigenes Material hoch.
         </p>
         <div class="flex flex-col gap-3">
           <button class="btn-primary w-full" :disabled="generating" @click="autoGenerate">
-            {{ generating ? '✨ Generating…' : '✨ Generate with AI' }}
+            {{ generating ? '✨ Wird erstellt…' : '✨ Mit KI generieren' }}
           </button>
-          <RouterLink to="/upload" class="btn-secondary w-full text-center">📄 Upload Material</RouterLink>
+          <RouterLink to="/upload" class="btn-secondary w-full text-center">📄 Material hochladen</RouterLink>
         </div>
         <div v-if="generating" class="mt-4 text-sm text-duo-gray animate-pulse">
-          AI is creating your first lesson…
+          KI erstellt deine erste Lektion…
         </div>
       </div>
 
-      <!-- Course path -->
       <div v-for="course in courses" :key="course.id" class="mb-8">
-        <!-- Course header -->
         <div class="flex items-center justify-between mb-4 px-1">
           <div>
             <h2 class="font-extrabold text-duo-dark text-lg leading-tight">{{ course.title }}</h2>
             <p v-if="course.description" class="text-xs text-duo-gray">{{ course.description }}</p>
           </div>
           <span class="text-xs bg-duo-light-gray text-duo-gray px-3 py-1 rounded-full font-bold">
-            {{ course.units.length }} unit{{ course.units.length !== 1 ? 's' : '' }}
+            {{ course.units.length }} Einheit{{ course.units.length !== 1 ? 'en' : '' }}
           </span>
         </div>
 
-        <!-- Path map -->
         <div class="relative">
-          <!-- Vertical path line -->
           <div class="absolute left-1/2 top-10 bottom-10 w-1 bg-duo-light-gray -translate-x-1/2 rounded-full" />
-
           <div
             v-for="(unit, idx) in course.units"
             :key="unit.id"
             class="relative mb-10 flex"
             :class="pathAlignment(idx)"
           >
-            <!-- Connector dot on center line -->
-            <div
-              v-if="idx > 0"
+            <div v-if="idx > 0"
               class="absolute top-[-2.5rem] left-1/2 -translate-x-1/2 w-3 h-3 rounded-full border-2"
               :class="isCompleted(unit.id) ? 'bg-duo-green border-duo-green' : 'bg-white border-duo-light-gray'"
             />
-
-            <!-- Node -->
             <div class="flex flex-col items-center gap-2" style="width: 90px">
-              <button
-                class="unit-node"
-                :class="nodeClass(unit)"
+              <button class="unit-node" :class="nodeClass(unit)"
                 :disabled="unit.question_count === 0"
-                @click="unit.question_count > 0 && goToLesson(unit.id)"
-              >
+                @click="unit.question_count > 0 && goToLesson(unit.id)">
                 <span v-if="isCompleted(unit.id)">✓</span>
                 <span v-else>{{ idx + 1 }}</span>
               </button>
-              <span class="text-xs font-bold text-duo-gray text-center leading-tight px-1">
-                {{ unit.title }}
-              </span>
-              <span v-if="unit.question_count === 0" class="text-xs text-duo-gray/60">No questions</span>
+              <span class="text-xs font-bold text-duo-gray text-center leading-tight px-1">{{ unit.title }}</span>
+              <span v-if="unit.question_count === 0" class="text-xs text-duo-gray/60">Keine Fragen</span>
               <span v-else class="text-xs font-bold"
                 :class="isCompleted(unit.id) ? 'text-duo-green' : 'text-duo-blue'">
-                {{ unit.question_count }} Q
+                {{ unit.question_count }} F
               </span>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Generate more (when courses exist) -->
       <div v-if="courses.length > 0" class="card p-4 flex items-center gap-3 mt-2">
         <div class="text-2xl">✨</div>
         <div class="flex-1">
-          <div class="font-bold text-duo-dark text-sm">Want more content?</div>
-          <div class="text-xs text-duo-gray">Generate another AI course</div>
+          <div class="font-bold text-duo-dark text-sm">Mehr Inhalte?</div>
+          <div class="text-xs text-duo-gray">Weiteren KI-Kurs generieren</div>
         </div>
         <button class="btn-primary !py-2 !px-4 !text-xs" :disabled="generating" @click="autoGenerate">
-          {{ generating ? '…' : 'Generate' }}
+          {{ generating ? '…' : 'Generieren' }}
         </button>
       </div>
     </template>
@@ -166,41 +146,31 @@ onMounted(async () => {
 function isCompleted(unitId: number) {
   return progress.value?.completed_unit_ids.includes(unitId) ?? false
 }
-
 function pathAlignment(idx: number) {
   const col = idx % 3
   if (col === 0) return 'justify-start pl-4'
   if (col === 1) return 'justify-center'
   return 'justify-end pr-4'
 }
-
 function nodeClass(unit: Unit) {
-  if (unit.question_count === 0)
-    return 'bg-duo-gray border-gray-400 opacity-40 cursor-not-allowed'
-  if (isCompleted(unit.id))
-    return 'bg-duo-green border-duo-green-dark cursor-pointer'
+  if (unit.question_count === 0) return 'bg-duo-gray border-gray-400 opacity-40 cursor-not-allowed'
+  if (isCompleted(unit.id)) return 'bg-duo-green border-duo-green-dark cursor-pointer'
   return 'bg-duo-blue border-blue-700 cursor-pointer hover:brightness-110'
 }
-
 function goToLesson(unitId: number) {
   router.push({ name: 'lesson', params: { unitId } })
 }
-
 async function autoGenerate() {
   if (!topic.value || generating.value) return
   generating.value = true
   try {
-    const { data } = await client.post(`/topics/${topicId}/generate/`, {
-      session_id: sessionId,
-    })
-    // Poll upload status until done
+    const { data } = await client.post(`/topics/${topicId}/generate/`, { session_id: sessionId })
     const poll = setInterval(async () => {
       const { data: status } = await client.get(`/uploads/${data.upload_id}/`)
       if (status.status === 'done') {
         clearInterval(poll)
         generating.value = false
-        const newCourses = await topicStore.fetchCourses(topicId)
-        courses.value = newCourses
+        courses.value = await topicStore.fetchCourses(topicId)
       } else if (status.status === 'failed') {
         clearInterval(poll)
         generating.value = false

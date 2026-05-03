@@ -15,20 +15,19 @@
       </RouterLink>
     </nav>
 
-    <!-- Stats -->
     <div class="border-t-2 border-duo-light-gray pt-4 mt-4 flex flex-col gap-3">
       <div class="flex items-center gap-3 px-4">
         <span class="text-2xl">🔥</span>
         <div>
-          <div class="font-extrabold text-duo-dark">{{ topStreak }} day streak</div>
-          <div class="text-xs text-duo-gray font-semibold">Keep it up!</div>
+          <div class="font-extrabold text-duo-dark">{{ topStreak }}-Tage-Serie</div>
+          <div class="text-xs text-duo-gray font-semibold">Weiter so!</div>
         </div>
       </div>
       <div class="flex items-center gap-3 px-4">
         <span class="text-2xl">⭐</span>
         <div>
           <div class="font-extrabold text-duo-dark">{{ totalXp }} XP</div>
-          <div class="text-xs text-duo-gray font-semibold">Total earned</div>
+          <div class="text-xs text-duo-gray font-semibold">Gesamt verdient</div>
         </div>
       </div>
     </div>
@@ -46,7 +45,7 @@ const totalXp = computed(() => progress.allProgress.reduce((s, p) => s + p.xp, 0
 const topStreak = computed(() => Math.max(0, ...progress.allProgress.map((p) => p.streak_days)))
 
 const navItems = [
-  { to: '/', icon: '🏠', label: 'Learn' },
-  { to: '/upload', icon: '📄', label: 'Upload Material' },
+  { to: '/', icon: '🏠', label: 'Lernen' },
+  { to: '/upload', icon: '📄', label: 'Material hochladen' },
 ]
 </script>

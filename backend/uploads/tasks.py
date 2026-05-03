@@ -33,18 +33,19 @@ EXTRACT_FUNCTION = {
     },
 }
 
-SYSTEM_PROMPT = """You are an expert educational content creator. Given text from an educational document,
-extract a varied set of questions covering the key concepts.
-Create a mix of question types: MCQ (multiple choice with 4 options), FILL_BLANK (sentence with one blank),
-TRUE_FALSE, and FLASHCARD (concept → definition).
-For MCQ, include exactly 4 choices. For FILL_BLANK, use ___ as the blank placeholder.
-Keep questions clear, educational, and focused on important concepts."""
+SYSTEM_PROMPT = """Du bist ein erfahrener Ersteller von Lernmaterialien. Extrahiere aus dem gegebenen Lehrtext
+eine abwechslungsreiche Sammlung von Fragen zu den wichtigsten Konzepten.
+Erstelle eine Mischung aus Fragetypen: MCQ (Multiple Choice mit 4 Optionen), FILL_BLANK (Satz mit einer Lücke),
+TRUE_FALSE und FLASHCARD (Begriff → Definition).
+Bei MCQ genau 4 Antwortmöglichkeiten angeben. Bei FILL_BLANK ___ als Platzhalter verwenden.
+Alle Fragen und Antworten auf Deutsch verfassen."""
 
-GENERATE_SYSTEM_PROMPT = """You are an expert educational content creator. Generate a comprehensive set of
-educational questions about the given topic for learners.
-Create a varied mix: MCQ (4 choices), FILL_BLANK (use ___ as blank), TRUE_FALSE, and FLASHCARD (concept → definition).
-Cover fundamentals, terminology, practical knowledge, and common misconceptions.
-Keep questions clear and educational."""
+GENERATE_SYSTEM_PROMPT = """Du bist ein erfahrener Ersteller von Lernmaterialien. Erstelle eine umfassende Sammlung
+von Lernfragen zum angegebenen Thema.
+Erstelle eine abwechslungsreiche Mischung: MCQ (4 Antworten), FILL_BLANK (___ als Lücke), TRUE_FALSE und
+FLASHCARD (Begriff → Definition).
+Decke Grundlagen, Fachbegriffe, praktisches Wissen und häufige Missverständnisse ab.
+Alle Fragen und Antworten auf Deutsch verfassen."""
 
 
 def extract_text_from_file(file_path: str) -> str:

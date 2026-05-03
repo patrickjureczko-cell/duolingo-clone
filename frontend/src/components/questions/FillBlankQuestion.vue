@@ -9,7 +9,7 @@
       {{ afterBlank }}
     </p>
 
-    <input v-if="!result" v-model="answer" type="text" placeholder="Type your answer…"
+    <input v-if="!result" v-model="answer" type="text" placeholder="Antwort eingeben…"
       class="w-full border-2 border-duo-light-gray rounded-2xl px-5 py-4 text-center font-bold text-lg focus:outline-none focus:border-duo-blue"
       @keydown.enter="submit"
     />
@@ -19,7 +19,7 @@
     </div>
 
     <button v-if="!result" class="btn-primary w-full" :disabled="!answer.trim()" @click="submit">
-      Check Answer
+      Antwort prüfen
     </button>
   </div>
 </template>

@@ -8,9 +8,9 @@
         :style="{ transform: flipped ? 'rotateY(180deg)' : 'rotateY(0deg)' }"
       >
         <div>
-          <div class="text-xs font-bold uppercase text-duo-gray mb-2">Question</div>
+          <div class="text-xs font-bold uppercase text-duo-gray mb-2">Frage</div>
           <div class="text-lg font-bold text-duo-dark">{{ question.text }}</div>
-          <div class="mt-4 text-xs text-duo-gray">Tap to reveal</div>
+          <div class="mt-4 text-xs text-duo-gray">Tippen zum Aufdecken</div>
         </div>
       </div>
       <div
@@ -19,15 +19,15 @@
         :style="{ transform: flipped ? 'rotateY(0deg)' : 'rotateY(-180deg)' }"
       >
         <div>
-          <div class="text-xs font-bold uppercase text-duo-green mb-2">Answer</div>
+          <div class="text-xs font-bold uppercase text-duo-green mb-2">Antwort</div>
           <div class="text-lg font-bold text-duo-dark">{{ question.correct_answer }}</div>
         </div>
       </div>
     </div>
 
     <div v-if="flipped && !answered" class="flex gap-3">
-      <button class="flex-1 btn-danger" @click="respond(false)">✗ Didn't know</button>
-      <button class="flex-1 btn-primary" @click="respond(true)">✓ Got it</button>
+      <button class="flex-1 btn-danger" @click="respond(false)">✗ Wusste ich nicht</button>
+      <button class="flex-1 btn-primary" @click="respond(true)">✓ Gewusst</button>
     </div>
   </div>
 </template>

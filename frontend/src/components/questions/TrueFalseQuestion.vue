@@ -8,7 +8,7 @@
         :disabled="!!result"
         @click="emit('answer', option)"
       >
-        {{ option === 'true' ? '✓ True' : '✗ False' }}
+        {{ option === 'true' ? '✓ Wahr' : '✗ Falsch' }}
       </button>
     </div>
   </div>

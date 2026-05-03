@@ -12,7 +12,7 @@
 
 <script setup lang="ts">
 const navItems = [
-  { to: '/', icon: '🏠', label: 'Learn' },
-  { to: '/upload', icon: '📄', label: 'Upload' },
+  { to: '/', icon: '🏠', label: 'Lernen' },
+  { to: '/upload', icon: '📄', label: 'Hochladen' },
 ]
 </script>
