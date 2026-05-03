@@ -6,7 +6,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = config('SECRET_KEY', default='dev-secret-key-change-in-prod')
 DEBUG = config('DEBUG', default=True, cast=bool)
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1').split(',')
+_allowed = config('ALLOWED_HOSTS', default='*')
+ALLOWED_HOSTS = ['*'] if _allowed == '*' else _allowed.split(',')
 
 INSTALLED_APPS = [
     'django.contrib.admin',

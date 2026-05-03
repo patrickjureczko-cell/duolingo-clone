@@ -1,41 +1,78 @@
 <template>
-  <main class="max-w-2xl mx-auto px-4 py-8">
-    <div class="text-center mb-8">
-      <h1 class="text-4xl font-extrabold text-duo-dark mb-2">What do you want to learn?</h1>
-      <p class="text-duo-gray font-semibold">Choose a topic or upload your own material</p>
+  <div class="max-w-2xl mx-auto px-4 py-8 pb-24 lg:pb-8">
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-3xl font-extrabold text-duo-dark">What are you learning?</h1>
+      <p class="text-duo-gray font-semibold mt-1">Pick a topic to start your journey</p>
     </div>
 
-    <div v-if="store.loading" class="flex justify-center py-16">
-      <div class="w-10 h-10 border-4 border-duo-green border-t-transparent rounded-full animate-spin" />
+    <!-- Loading -->
+    <div v-if="store.loading" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div v-for="i in 6" :key="i" class="card p-5 h-28 animate-pulse bg-gray-100" />
     </div>
 
-    <div v-else class="flex flex-col gap-3">
-      <TopicCard
+    <!-- Topic grid -->
+    <div v-else class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <RouterLink
         v-for="topic in store.topics"
         :key="topic.id"
-        :topic="topic"
-        :progress="progressStore.getForTopic(topic.id)"
-      />
-    </div>
+        :to="`/topic/${topic.id}`"
+        class="card p-5 flex items-center gap-4 hover:shadow-md transition-all hover:-translate-y-0.5 active:translate-y-0"
+      >
+        <!-- Icon -->
+        <div
+          class="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl flex-shrink-0"
+          :style="{ background: topic.color + '22' }"
+        >{{ topic.icon }}</div>
 
-    <div class="mt-8 text-center">
-      <RouterLink to="/upload" class="btn-secondary inline-block">
-        📄 Upload your own material
+        <!-- Info -->
+        <div class="flex-1 min-w-0">
+          <div class="font-extrabold text-duo-dark text-base leading-tight">{{ topic.name }}</div>
+          <div class="text-xs text-duo-gray mt-0.5 line-clamp-1">{{ topic.description }}</div>
+
+          <!-- Progress bar -->
+          <div class="mt-2 flex items-center gap-2">
+            <div class="flex-1 h-2 bg-duo-light-gray rounded-full overflow-hidden">
+              <div
+                class="h-full rounded-full transition-all duration-500"
+                :style="{ width: xpBarWidth(topic.id), background: topic.color }"
+              />
+            </div>
+            <span class="text-xs font-bold" :style="{ color: topic.color }">
+              {{ progressStore.getForTopic(topic.id)?.xp ?? 0 }} XP
+            </span>
+          </div>
+        </div>
+
+        <!-- Arrow -->
+        <div class="text-duo-light-gray text-xl font-bold flex-shrink-0">›</div>
       </RouterLink>
     </div>
-  </main>
+
+    <!-- Upload CTA -->
+    <div class="mt-8 card p-6 flex items-center gap-4 bg-gradient-to-r from-duo-blue/10 to-purple-100 border-duo-blue/30">
+      <div class="w-14 h-14 rounded-2xl bg-duo-blue/20 flex items-center justify-center text-3xl flex-shrink-0">📄</div>
+      <div class="flex-1">
+        <div class="font-extrabold text-duo-dark">Upload your own material</div>
+        <div class="text-sm text-duo-gray">PDF or text file → AI generates a full lesson</div>
+      </div>
+      <RouterLink to="/upload" class="btn-primary !py-2 !px-4 !text-xs whitespace-nowrap">Start</RouterLink>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useTopicStore } from '../stores/topicStore'
 import { useProgressStore } from '../stores/progressStore'
-import TopicCard from '../components/TopicCard.vue'
 
 const store = useTopicStore()
 const progressStore = useProgressStore()
 
-onMounted(async () => {
-  await Promise.all([store.fetchTopics(), progressStore.fetchAll()])
-})
+onMounted(() => Promise.all([store.fetchTopics(), progressStore.fetchAll()]))
+
+function xpBarWidth(topicId: number) {
+  const xp = progressStore.getForTopic(topicId)?.xp ?? 0
+  return Math.min(100, (xp / 500) * 100) + '%'
+}
 </script>
