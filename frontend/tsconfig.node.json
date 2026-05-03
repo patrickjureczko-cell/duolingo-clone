@@ -1,5 +1,12 @@
 {
-  "extends": "@tsconfig/node20/tsconfig.json",
   "include": ["vite.config.ts"],
-  "compilerOptions": { "composite": true }
+  "compilerOptions": {
+    "composite": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "strict": true,
+    "skipLibCheck": true
+  }
 }
